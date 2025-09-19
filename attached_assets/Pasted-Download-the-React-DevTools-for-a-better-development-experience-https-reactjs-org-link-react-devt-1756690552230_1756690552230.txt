@@ -1,0 +1,63 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+StripeProvider.tsx:8 Stripe key loaded: pk_test_51OMnBIBZKig...
+Compare.tsx:107 Compare page: checking localStorage... Found 5 items
+JarvisFloatingChat.tsx:95 JarvisFloatingChat: Setting up event listener for openJarvisChat
+3chunk-WERSD76P.js?v=80a88bec:521 Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+    at Compare (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/pages/Compare.tsx:41:51)
+    at Route (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=80a88bec:323:16)
+    at Switch (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=80a88bec:379:17)
+    at Router
+    at Provider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-PLT6GTVM.js?v=80a88bec:38:15)
+    at TooltipProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=80a88bec:67:5)
+    at CartProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/contexts/CartContext.tsx:21:32)
+    at ThemeProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/ThemeProvider.tsx:21:33)
+    at LocalizationProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/LocalizationProvider.tsx:51:40)
+    at AuthProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/AuthProvider.tsx:29:32)
+    at QueryClientProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=80a88bec:2805:3)
+    at App
+printWarning @ chunk-WERSD76P.js?v=80a88bec:521Understand this error
+api/user/preferences:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+chunk-WERSD76P.js?v=80a88bec:521 Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+    at Compare (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/pages/Compare.tsx:41:51)
+    at Route (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=80a88bec:323:16)
+    at Switch (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=80a88bec:379:17)
+    at Router
+    at Provider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-PLT6GTVM.js?v=80a88bec:38:15)
+    at TooltipProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=80a88bec:67:5)
+    at CartProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/contexts/CartContext.tsx:21:32)
+    at ThemeProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/ThemeProvider.tsx:21:33)
+    at LocalizationProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/LocalizationProvider.tsx:51:40)
+    at AuthProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/AuthProvider.tsx:29:32)
+    at QueryClientProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=80a88bec:2805:3)
+    at App
+printWarning @ chunk-WERSD76P.js?v=80a88bec:521Understand this error
+Compare.tsx:94 Compare page: Found 0 products to compare from 5 saved IDs
+Compare.tsx:107 Compare page: checking localStorage... Found 5 items
+Compare.tsx:116 Compare page: Loading 0 products from 5 saved IDs
+Compare.tsx:117 Available products: 20
+Compare.tsx:118 Saved IDs: Array(5)
+Compare.tsx:119 Found products: Array(0)
+api/user/preferences:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+Wishlist.tsx:58 Wishlist IDs from localStorage: Array(7)
+Wishlist.tsx:61 Total products available for wishlist matching: 20
+Wishlist.tsx:62 First few product IDs available: Array(5)
+Wishlist.tsx:66 Wishlist products found: 0
+Wishlist.tsx:67 Wishlist products: Array(0)
+Compare.tsx:94 Compare page: Found 0 products to compare from 5 saved IDs
+Compare.tsx:107 Compare page: checking localStorage... Found 5 items
+Compare.tsx:116 Compare page: Loading 0 products from 5 saved IDs
+Compare.tsx:117 Available products: 20
+Compare.tsx:118 Saved IDs: Array(5)
+Compare.tsx:119 Found products: Array(0)
+ 🔍 Compare page: Loading from localStorage...
+ 🔍 Compare page: savedList from localStorage: ["woo-56401","woo-56411","woo-56419","woo-56428","woo-56435"]
+ 🔍 Compare page: parsed compareIds: Array(5)
+ 🔍 Compare page: allProducts available: 20
+ 🔍 Compare page: first 3 product IDs: Array(3)
+ 🔍 Compare page: Found 0 products to compare from 5 saved IDs
+ 🔍 Compare page: matched products: Array(0)
+ Compare page: checking localStorage... Found 5 items
+ Compare page: Loading 0 products from 5 saved IDs
+ Available products: 20
+ Saved IDs: Array(5)
+ Found products: Array(0)

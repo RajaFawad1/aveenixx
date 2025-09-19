@@ -1,0 +1,23 @@
+The above error occurred in the <SimpleSearch> component:
+
+    at SimpleSearch (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/SimpleSearch.tsx:25:3)
+    at div
+    at div
+    at MainNavbar (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/layout/MainNavbar.tsx:27:38)
+    at div
+    at div
+    at HomePage (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/pages/HomePage.tsx:275:20)
+    at Route (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=24aa4a7c:323:16)
+    at Switch (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=24aa4a7c:379:17)
+    at Router
+    at Provider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-PLT6GTVM.js?v=24aa4a7c:38:15)
+    at TooltipProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=24aa4a7c:67:5)
+    at CartProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/contexts/CartContext.tsx:21:32)
+    at ThemeProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/ThemeProvider.tsx:21:33)
+    at LocalizationProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/LocalizationProvider.tsx:51:40)
+    at AuthProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/src/components/providers/AuthProvider.tsx:29:32)
+    at QueryClientProvider (https://ec31f301-4763-4bfd-bbb8-005a35d772e3-00-1uykfgjj30s7p.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=24aa4a7c:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.

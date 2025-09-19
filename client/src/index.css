@@ -1,0 +1,866 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Improved Slider Styles */
+.slider-root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  width: 100%;
+  height: 20px;
+}
+
+.slider-track {
+  background-color: hsl(210 40% 90%);
+  position: relative;
+  flex-grow: 1;
+  border-radius: 9999px;
+  height: 6px;
+}
+
+.slider-range {
+  position: absolute;
+  background-color: var(--primary-color, #FACC15);
+  border-radius: 9999px;
+  height: 100%;
+}
+
+.slider-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border: 2px solid var(--primary-color, #FACC15);
+  border-radius: 50%;
+  cursor: grab;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider-thumb:hover {
+  border-width: 3px;
+  transform: scale(1.1);
+  cursor: grab;
+}
+
+.slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.slider-thumb:focus {
+  outline: 2px solid var(--primary-color, #FACC15);
+  outline-offset: 2px;
+}
+
+/* Dark mode slider adjustments */
+.dark .slider-track {
+  background-color: hsl(215 28% 17%);
+}
+
+.dark .slider-thumb {
+  background-color: hsl(222.2 84% 4.9%);
+  border-color: var(--primary-color, #FACC15);
+}
+
+/* Hide scrollbars for thumbnail gallery */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Dropdown animations */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+.animate-stagger-in {
+  animation: stagger-in 0.4s ease-out forwards;
+}
+
+/* Enhanced dropdown styling */
+.dropdown-enhanced {
+  border-image: linear-gradient(135deg, var(--primary-color, #22c55e), rgba(34, 197, 94, 0.3)) 1;
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.1),
+    0 10px 25px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode dropdown enhancements */
+.dark .dropdown-enhanced {
+  border-image: linear-gradient(135deg, var(--primary-color, #22c55e), rgba(34, 197, 94, 0.4)) 1;
+  box-shadow: 
+    inset 0 1px 3px rgba(255, 255, 255, 0.1),
+    0 10px 25px rgba(0, 0, 0, 0.4),
+    0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile image loading optimizations */
+@media screen and (max-width: 768px) {
+  img {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+  
+  /* Samsung Internet specific optimizations */
+  @supports (-webkit-appearance: none) {
+    img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: auto;
+    }
+  }
+  
+  /* Force hardware acceleration on mobile */
+  .hw-accel {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Product card consistency fixes */
+.preview-product-card {
+  min-height: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-product-card .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+}
+
+.preview-product-image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+  background-color: #f9fafb;
+}
+
+.preview-product-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.preview-product-header {
+  margin-bottom: 2px;
+}
+
+.preview-product-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 2px;
+}
+
+.preview-product-footer {
+  margin-top: auto;
+}
+
+.preview-ai-suggestion {
+  margin-bottom: 2px;
+  padding: 1px 2px;
+}
+
+.preview-ai-suggestion:last-child {
+  margin-bottom: 0;
+}
+
+/* Layout and scrolling optimizations */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Animation and hover effects */
+.hw-accel {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.btn-hover,
+.btn-enhanced {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover:hover,
+.btn-enhanced:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-enhanced:active {
+  transform: translateY(0);
+}
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Dark mode and theme transition animations */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, 
+             fill 0.3s ease, stroke 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Prevent horizontal overflow on all elements */
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Enhanced color system for 1500px dashboard layout */
+:root {
+  --theme-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Default theme color - will be overridden by theme classes */
+  --primary-color: hsl(45, 93%, 47%);
+  --primary-color-dark: hsl(45, 93%, 40%);
+  --primary-bg: hsl(45, 93%, 85%);
+  --hover-color: hsl(45, 93%, 54%);
+  
+  /* Dashboard Layout Colors */
+  --dashboard-bg: #f9fafb;
+  --dashboard-sidebar: #ffffff;
+  --dashboard-header: #ffffff;
+  --dashboard-content: #f3f4f6;
+  --dashboard-card: #ffffff;
+  
+  /* Enhanced Text Colors */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  
+  /* Enhanced Border Colors */
+  --border-light: #e5e7eb;
+  --border-medium: #d1d5db;
+  --border-strong: #9ca3af;
+  
+  /* Brand Colors - Enhanced */
+  --primary-yellow: #fbbf24;
+  --primary-orange: #ea580c;
+  --accent-red: #dc2626;
+  
+  /* Section Theme Colors */
+  --analytics-color: #3b82f6;
+  --sales-color: #10b981;
+  --inventory-color: #f59e0b;
+  --customers-color: #8b5cf6;
+  --directory-color: #ea580c;
+}
+
+.dark {
+  /* Dark Mode Dashboard Colors */
+  --dashboard-bg: #0f172a;
+  --dashboard-sidebar: #1e293b;
+  --dashboard-header: #1e293b;
+  --dashboard-content: #0f172a;
+  --dashboard-card: #1e293b;
+  
+  /* Dark Mode Text Colors */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  
+  /* Dark Mode Border Colors */
+  --border-light: #334155;
+  --border-medium: #475569;
+  --border-strong: #64748b;
+}
+
+/* Enhanced dashboard grid system for 1500px layout */
+.dashboard-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.dashboard-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.dashboard-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-grid-4,
+  .dashboard-grid-3,
+  .dashboard-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Enhanced section headers with colored underlines */
+.section-header {
+  position: relative;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3rem;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--primary-orange), var(--primary-yellow));
+}
+
+.section-header-analytics::after {
+  background: var(--analytics-color);
+}
+
+.section-header-sales::after {
+  background: var(--sales-color);
+}
+
+.section-header-inventory::after {
+  background: var(--inventory-color);
+}
+
+.section-header-customers::after {
+  background: var(--customers-color);
+}
+
+.section-header-directory::after {
+  background: var(--directory-color);
+}
+
+/* Enhanced cards for 1500px layout */
+.dashboard-card {
+  background: var(--dashboard-card);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  border-color: var(--border-medium);
+}
+
+/* Prevent transition on page load */
+.no-transition * {
+  transition: none !important;
+}
+
+/* Custom hover effect for product cards */
+.product-card-hover .hover-actions {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card-hover:hover .hover-actions {
+  opacity: 1;
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.5);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.8);
+}
+
+/* Hide scrollbar for better mobile experience */
+@media (max-width: 768px) {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+  }
+}
+
+/* Typography improvements */
+@layer base {
+  html {
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  body {
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(45, 93%, 47%);
+  --primary-foreground: hsl(20, 14.3%, 4.1%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  --aveenix-yellow: hsl(45, 93%, 47%);
+  --aveenix-orange: hsl(21, 90%, 48%);
+  --aveenix-dark: hsl(220, 13%, 18%);
+  --primary-color: #FACC15;
+  --primary-color-dark: #D69E2E;
+  --primary-color-light: #FEF3C7;
+  --primary-color-bg: rgba(250, 204, 21, 0.1);
+}
+
+/* Theme color utility classes */
+.hover-color-text:hover,
+.hover-theme-color:hover {
+  color: var(--hover-color) !important;
+  transform: translateY(-1px);
+}
+
+.hover-color-bg:hover {
+  background-color: var(--hover-color) !important;
+  transform: translateY(-1px);
+}
+
+.hover-color-border:hover {
+  border-color: var(--hover-color) !important;
+}
+
+.theme-color {
+  color: var(--hover-color) !important;
+  transition: var(--theme-transition);
+}
+
+/* Mobile touch behavior optimization */
+@media (hover: none) and (pointer: coarse) {
+  .hover-color-text:hover {
+    transform: none;
+  }
+  
+  .hover-color-text:active {
+    color: var(--hover-color) !important;
+    transform: scale(0.95);
+  }
+  
+  .hover-color-text:focus {
+    outline: none;
+  }
+}
+
+/* Smooth theme color transitions for all elements */
+[style*="--primary-color"], 
+[style*="--hover-color"] {
+  transition: var(--theme-transition);
+}
+
+/* Enhanced smooth transitions for theme elements */
+.theme-transition {
+  transition: var(--theme-transition);
+}
+
+/* Slider component color overrides to use global primary color */
+[data-radix-slider-root] {
+  --slider-track-bg: #e2e8f0;
+  --slider-range-bg: var(--primary-color);
+  --slider-thumb-bg: var(--primary-color);
+  --slider-thumb-border: var(--primary-color);
+}
+
+[data-radix-slider-root] [data-radix-slider-track] {
+  background-color: var(--slider-track-bg);
+}
+
+[data-radix-slider-root] [data-radix-slider-range] {
+  background-color: var(--slider-range-bg) !important;
+}
+
+[data-radix-slider-root] [data-radix-slider-thumb] {
+  background-color: var(--slider-thumb-bg) !important;
+  border-color: var(--slider-thumb-border) !important;
+}
+
+.dark [data-radix-slider-root] {
+  --slider-track-bg: #374151;
+}
+
+/* Global color utilities to replace hardcoded colors */
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-primary-light { background-color: var(--primary-color-light) !important; }
+.bg-primary-dark { background-color: var(--primary-color-dark) !important; }
+.text-primary { color: var(--primary-color) !important; }
+.border-primary { border-color: var(--primary-color) !important; }
+
+/* Override common hardcoded color patterns */
+.bg-green-500, .bg-blue-500, .bg-purple-500 { 
+  background-color: var(--primary-color) !important; 
+}
+.text-green-800, .text-blue-800, .text-purple-800 { 
+  color: var(--primary-color) !important; 
+}
+.bg-green-100, .bg-blue-100, .bg-purple-100 { 
+  background-color: var(--primary-color-bg) !important; 
+}
+
+/* Enhanced button animations - consolidated above */
+
+/* Color Theme Variations */
+.theme-yellow {
+  --primary-color: hsl(45, 93%, 47%);
+  --primary-color-dark: hsl(45, 93%, 40%);
+  --primary-bg: hsl(45, 93%, 85%);
+  --hover-color: hsl(45, 93%, 54%);
+}
+
+.theme-blue {
+  --primary-color: hsl(207, 90%, 54%);
+  --primary-color-dark: hsl(207, 90%, 47%);
+  --primary-bg: hsl(207, 90%, 85%);
+  --hover-color: hsl(207, 90%, 60%);
+}
+
+.theme-green {
+  --primary-color: hsl(142, 71%, 45%);
+  --primary-color-dark: hsl(142, 71%, 38%);
+  --primary-bg: hsl(142, 71%, 85%);
+  --hover-color: hsl(142, 71%, 52%);
+}
+
+.theme-purple {
+  --primary-color: hsl(262, 83%, 58%);
+  --primary-color-dark: hsl(262, 83%, 51%);
+  --primary-bg: hsl(262, 83%, 85%);
+  --hover-color: hsl(262, 83%, 65%);
+}
+
+.theme-red {
+  --primary-color: hsl(0, 84%, 60%);
+  --primary-color-dark: hsl(0, 84%, 53%);
+  --primary-bg: hsl(0, 84%, 85%);
+  --hover-color: hsl(0, 84%, 67%);
+}
+
+.theme-orange {
+  --primary-color: hsl(21, 90%, 48%);
+  --primary-color-dark: hsl(21, 90%, 41%);
+  --primary-bg: hsl(21, 90%, 85%);
+  --hover-color: hsl(21, 90%, 55%);
+}
+
+.theme-teal {
+  --primary-color: hsl(173, 58%, 39%);
+  --primary-color-dark: hsl(173, 58%, 32%);
+  --primary-bg: hsl(173, 58%, 85%);
+  --hover-color: hsl(173, 58%, 46%);
+}
+
+.theme-indigo {
+  --primary-color: hsl(231, 48%, 48%);
+  --primary-color-dark: hsl(231, 48%, 41%);
+  --primary-bg: hsl(231, 48%, 85%);
+  --hover-color: hsl(231, 48%, 55%);
+}
+
+.theme-pink {
+  --primary-color: hsl(328, 85%, 70%);
+  --primary-color-dark: hsl(328, 85%, 63%);
+  --primary-bg: hsl(328, 85%, 90%);
+  --hover-color: hsl(328, 85%, 75%);
+}
+
+.theme-lime {
+  --primary-color: hsl(84, 81%, 44%);
+  --primary-color-dark: hsl(84, 81%, 37%);
+  --primary-bg: hsl(84, 81%, 85%);
+  --hover-color: hsl(84, 81%, 51%);
+}
+
+.theme-cyan {
+  --primary-color: hsl(188, 78%, 41%);
+  --primary-color-dark: hsl(188, 78%, 34%);
+  --primary-bg: hsl(188, 78%, 85%);
+  --hover-color: hsl(188, 78%, 48%);
+}
+
+.theme-amber {
+  --primary-color: hsl(43, 96%, 56%);
+  --primary-color-dark: hsl(43, 96%, 49%);
+  --primary-bg: hsl(43, 96%, 85%);
+  --hover-color: hsl(43, 96%, 63%);
+}
+
+.theme-emerald {
+  --primary-color: hsl(160, 84%, 39%);
+  --primary-color-dark: hsl(160, 84%, 32%);
+  --primary-bg: hsl(160, 84%, 85%);
+  --hover-color: hsl(160, 84%, 46%);
+}
+
+.theme-violet {
+  --primary-color: hsl(258, 90%, 66%);
+  --primary-color-dark: hsl(258, 90%, 59%);
+  --primary-bg: hsl(258, 90%, 90%);
+  --hover-color: hsl(258, 90%, 73%);
+}
+
+.theme-rose {
+  --primary-color: hsl(330, 81%, 60%);
+  --primary-color-dark: hsl(330, 81%, 53%);
+  --primary-bg: hsl(330, 81%, 85%);
+  --hover-color: hsl(330, 81%, 67%);
+}
+
+.theme-sky {
+  --primary-color: hsl(200, 98%, 39%);
+  --primary-color-dark: hsl(200, 98%, 32%);
+  --primary-bg: hsl(200, 98%, 85%);
+  --hover-color: hsl(200, 98%, 46%);
+}
+
+.theme-fuchsia {
+  --primary-color: hsl(292, 84%, 61%);
+  --primary-color-dark: hsl(292, 84%, 54%);
+  --primary-bg: hsl(292, 84%, 85%);
+  --hover-color: hsl(292, 84%, 68%);
+}
+
+.theme-slate {
+  --primary-color: hsl(215, 16%, 47%);
+  --primary-color-dark: hsl(215, 16%, 40%);
+  --primary-bg: hsl(215, 16%, 85%);
+  --hover-color: hsl(215, 16%, 54%);
+}
+
+.dark {
+  --background: hsl(220, 13%, 18%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(220, 13%, 18%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(220, 13%, 18%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(45, 93%, 47%);
+  --primary-foreground: hsl(20, 14.3%, 4.1%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  --primary-color: #FACC15;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Prevent background scrolling when mobile menus are open */
+  .menu-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100vh !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  /* Touch-friendly interface elements */
+  @media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets for mobile */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Increased button padding for better touch interaction */
+    .btn-touch {
+      padding: 12px 20px;
+      font-size: 16px;
+    }
+    
+    /* Larger checkbox and radio buttons */
+    input[type="checkbox"], input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      margin: 4px;
+    }
+    
+    /* Better spacing for form elements */
+    .form-touch {
+      margin-bottom: 16px;
+    }
+    
+    /* Improved dropdown touch interaction */
+    select {
+      padding: 12px 16px;
+      font-size: 16px;
+      min-height: 44px;
+    }
+    
+    /* Enhanced card touch interaction */
+    .card-touch {
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    /* Larger icon buttons */
+    .icon-btn-touch {
+      padding: 16px;
+      border-radius: 8px;
+    }
+  }
+
+  /* Custom 1500px max-width constraint */
+  .max-w-1500 {
+    max-width: 1500px;
+  }
+
+  /* Color picker swatch styles - override global transitions */
+  .color-swatch {
+    transition: transform 0.2s ease !important;
+  }
+
+  .color-swatch[style*="background-color"] {
+    background-image: none !important;
+  }
+
+  /* Test page color swatch */
+  .color-swatch-test {
+    background-color: var(--color) !important;
+    transition: transform 0.2s ease !important;
+  }
+}
