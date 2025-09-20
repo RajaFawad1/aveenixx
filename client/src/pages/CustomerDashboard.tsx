@@ -80,19 +80,44 @@ export default function CustomerDashboard() {
     ['delivered', 'confirmed'].includes(order.status)
   ).length;
 
-  // Fetch rewards data
+  // Fetch rewards data and task progress
   const { data: rewardsData, isLoading: rewardsLoading } = useQuery({
-    queryKey: ['/api/rewards/me'],
+    queryKey: [`/api/rewards/dashboard/${user?.id}`],
+    enabled: !!user?.id,
     queryFn: async () => {
       try {
-        const response = await fetch('/api/rewards/me');
+        const response = await fetch(`/api/rewards/dashboard/${user?.id}`);
         if (!response.ok) {
+          // Fallback to basic rewards endpoint
+          const fallbackResponse = await fetch('/api/rewards/me');
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            return {
+              available: fallbackData.available || 0,
+              confirmed: fallbackData.confirmed || 0,
+              redeemed: fallbackData.redeemed || 0,
+              totalEarnings: (fallbackData.confirmed || 0) / 100,
+              availableBalance: (fallbackData.available || 0) / 100,
+              totalCredits: 0,
+              completedTasks: 0,
+              communityLevel: 'rookie'
+            };
+          }
           throw new Error('Failed to fetch rewards');
         }
         return response.json();
       } catch (error) {
         console.error('Error fetching rewards:', error);
-        return { available: 0, confirmed: 0, redeemed: 0 };
+        return { 
+          available: 0, 
+          confirmed: 0, 
+          redeemed: 0,
+          totalEarnings: 0,
+          availableBalance: 0,
+          totalCredits: 0,
+          completedTasks: 0,
+          communityLevel: 'rookie'
+        };
       }
     },
   });
@@ -233,38 +258,44 @@ export default function CustomerDashboard() {
               <Card className="hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
-                    <Star className="h-4 w-4 mr-2" />
-                    Wishlist Items
+                    <Award className="h-4 w-4 mr-2" />
+                    Total Earned
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-purple-600">{wishlistCount}</div>
-                  <p className="text-xs text-gray-500">Saved items</p>
+                  <div className="text-2xl font-bold text-green-600">
+                    {rewardsLoading ? '...' : `$${(rewardsData?.totalEarnings || 0).toFixed(2)}`}
+                  </div>
+                  <p className="text-xs text-gray-500">Reward earnings</p>
                 </CardContent>
               </Card>
               <Card className="hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Addresses
+                    <Star className="h-4 w-4 mr-2" />
+                    Tasks Completed
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-green-600">{addresses.length}</div>
-                  <p className="text-xs text-gray-500">Saved addresses</p>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {rewardsLoading ? '...' : rewardsData?.completedTasks || 0}
+                  </div>
+                  <p className="text-xs text-gray-500">Tasks finished</p>
                 </CardContent>
               </Card>
               <Card className="hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-800">
                   <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
-                    <Award className="h-4 w-4 mr-2" />
-                    Rewards
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Community Level
                   </CardTitle>
                   </CardHeader>
                   <CardContent>
-                  <div className="text-2xl font-bold text-yellow-600">Active</div>
-                  <p className="text-xs text-gray-500">Earn & redeem</p>
-                </CardContent>
+                    <div className="text-2xl font-bold text-yellow-600 capitalize">
+                      {rewardsLoading ? '...' : rewardsData?.communityLevel || 'Rookie'}
+                    </div>
+                    <p className="text-xs text-gray-500">Current level</p>
+                  </CardContent>
               </Card>
              </div>
 
