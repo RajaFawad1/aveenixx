@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import ReferralSystem from "@/components/ReferralSystem";
 import AchievementSystem from "@/components/AchievementSystem";
 import { 
@@ -24,20 +26,315 @@ import {
   Share2,
   Coins,
   Gem,
-  UserPlus
+  UserPlus,
+  CheckCircle,
+  Circle,
+  Clock,
+  RefreshCw
 } from "lucide-react";
 
+interface Task {
+  id: string;
+  name: string;
+  description: string;
+  reward: string;
+  pointsReward: number;
+  cashReward: number;
+  status: 'available' | 'in_progress' | 'completed';
+  progress?: number;
+  maxProgress?: number;
+  category: string;
+}
+
+interface UserRewardStats {
+  totalEarnings: number;
+  availableCredits: number;
+  currentLevel: string;
+  questionsAsked: number;
+  solutionsProvided: number;
+  helpfulVotes: number;
+  referrals: number;
+  moderationPoints: number;
+  completedTasks: number;
+  availableBalance: number;
+}
+
 export default function CommunityRewards() {
-  const [userStats, setUserStats] = useState({
-    totalEarnings: 247.50,
-    availableCredits: 89,
-    currentLevel: "rising",
-    questionsAsked: 23,
-    solutionsProvided: 12,
-    helpfulVotes: 156,
-    referrals: 8,
-    moderationPoints: 45
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [userStats, setUserStats] = useState<UserRewardStats>({
+    totalEarnings: 0,
+    availableCredits: 0,
+    currentLevel: "rookie",
+    questionsAsked: 0,
+    solutionsProvided: 0,
+    helpfulVotes: 0,
+    referrals: 0,
+    moderationPoints: 0,
+    completedTasks: 0,
+    availableBalance: 0
   });
+
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: 'complete_profile',
+      name: 'Complete Your Profile',
+      description: 'Add your name, bio, and profile picture to get started',
+      reward: '$2.00',
+      pointsReward: 100,
+      cashReward: 200,
+      status: 'available',
+      progress: 0,
+      maxProgress: 3,
+      category: 'Getting Started'
+    },
+    {
+      id: 'first_question',
+      name: 'Ask Your First Question',
+      description: 'Share a question with the community to get help',
+      reward: '$3.00',
+      pointsReward: 150,
+      cashReward: 300,
+      status: 'available',
+      category: 'Community Engagement'
+    },
+    {
+      id: 'first_review',
+      name: 'Write Your First Review',
+      description: 'Review a product or service to help other users',
+      reward: '$1.50',
+      pointsReward: 75,
+      cashReward: 150,
+      status: 'available',
+      category: 'Content Creation'
+    },
+    {
+      id: 'daily_login',
+      name: 'Daily Login Streak',
+      description: 'Login for 7 consecutive days',
+      reward: '$5.00',
+      pointsReward: 250,
+      cashReward: 500,
+      status: 'available',
+      progress: 0,
+      maxProgress: 7,
+      category: 'Engagement'
+    },
+    {
+      id: 'invite_friend',
+      name: 'Invite a Friend',
+      description: 'Invite a friend to join and earn when they become active',
+      reward: '$10.00',
+      pointsReward: 500,
+      cashReward: 1000,
+      status: 'available',
+      category: 'Referrals'
+    },
+    {
+      id: 'make_purchase',
+      name: 'Make Your First Purchase',
+      description: 'Buy something from our marketplace',
+      reward: '$15.00',
+      pointsReward: 750,
+      cashReward: 1500,
+      status: 'available',
+      category: 'Shopping'
+    },
+    {
+      id: 'weekly_active',
+      name: 'Weekly Active User',
+      description: 'Be active on the platform for 4 weeks',
+      reward: '$25.00',
+      pointsReward: 1250,
+      cashReward: 2500,
+      status: 'available',
+      progress: 0,
+      maxProgress: 4,
+      category: 'Engagement'
+    },
+    {
+      id: 'product_upload',
+      name: 'Upload a Product',
+      description: 'List your first product or service',
+      reward: '$20.00',
+      pointsReward: 1000,
+      cashReward: 2000,
+      status: 'available',
+      category: 'Vendor'
+    }
+  ]);
+
+  const [loading, setLoading] = useState(false);
+
+  // Load user stats and task progress from backend
+  const loadUserStats = async () => {
+    if (!user?.id) return;
+
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/rewards/dashboard/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserStats({
+          totalEarnings: data.totalEarnings || 0,
+          availableCredits: data.totalCredits || 0,
+          currentLevel: data.communityLevel || 'rookie',
+          questionsAsked: data.questionsAsked || 0,
+          solutionsProvided: data.solutionsProvided || 0,
+          helpfulVotes: data.helpfulVotes || 0,
+          referrals: data.referralStats?.totalReferrals || 0,
+          moderationPoints: data.moderationPoints || 0,
+          completedTasks: data.completedTasks || 0,
+          availableBalance: data.availableBalance || 0
+        });
+
+        // Update tasks with user progress
+        if (data.userTasks) {
+          setTasks(prevTasks => 
+            prevTasks.map(task => {
+              const userTask = data.userTasks.find((ut: any) => ut.taskId === task.id);
+              if (userTask) {
+                return {
+                  ...task,
+                  status: userTask.status,
+                  progress: userTask.progress || 0
+                };
+              }
+              return task;
+            })
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Complete a task and award rewards
+  const completeTask = async (taskId: string) => {
+    if (!user?.id) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to complete tasks",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Award points for community activity
+      const response = await fetch('/api/rewards/award-points', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          activityType: 'task_completed',
+          targetId: taskId,
+          points: tasks.find(t => t.id === taskId)?.pointsReward || 0,
+          metadata: { taskId }
+        })
+      });
+
+      if (response.ok) {
+        // Update task status
+        setTasks(prevTasks => 
+          prevTasks.map(task => 
+            task.id === taskId 
+              ? { ...task, status: 'completed' as const }
+              : task
+          )
+        );
+
+        // Add reward to community rewards
+        const rewardResponse = await fetch('/api/community/rewards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            rewardType: 'task_completion',
+            amount: (tasks.find(t => t.id === taskId)?.cashReward || 0) / 100,
+            credits: tasks.find(t => t.id === taskId)?.pointsReward || 0,
+            sourceId: taskId,
+            description: `Completed task: ${tasks.find(t => t.id === taskId)?.name}`,
+            status: 'approved'
+          })
+        });
+
+        if (rewardResponse.ok) {
+          toast({
+            title: "Task Completed! 🎉",
+            description: `You earned ${tasks.find(t => t.id === taskId)?.reward} and ${tasks.find(t => t.id === taskId)?.pointsReward} points!`,
+          });
+
+          // Reload user stats
+          loadUserStats();
+        }
+      } else {
+        throw new Error('Failed to complete task');
+      }
+    } catch (error) {
+      console.error('Error completing task:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete task. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Start a task
+  const startTask = async (taskId: string) => {
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === taskId 
+          ? { ...task, status: 'in_progress' as const }
+          : task
+      )
+    );
+
+    toast({
+      title: "Task Started",
+      description: "Good luck! Complete the requirements to earn your reward.",
+    });
+  };
+
+  // Load user data on mount
+  useEffect(() => {
+    loadUserStats();
+  }, [user?.id]);
+
+  const getTaskIcon = (status: Task['status']) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-5 w-5 text-green-600" />;
+      case 'in_progress':
+        return <Clock className="h-5 w-5 text-blue-600" />;
+      default:
+        return <Circle className="h-5 w-5 text-gray-400" />;
+    }
+  };
+
+  const getTasksByCategory = () => {
+    const categories = tasks.reduce((acc, task) => {
+      if (!acc[task.category]) {
+        acc[task.category] = [];
+      }
+      acc[task.category].push(task);
+      return acc;
+    }, {} as Record<string, Task[]>);
+
+    return categories;
+  };
 
   const earningOpportunities = [
     {
@@ -185,15 +482,133 @@ export default function CommunityRewards() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="opportunities" className="space-y-6">
+        <Tabs defaultValue="tasks" className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="tasks">Available Tasks</TabsTrigger>
             <TabsTrigger value="opportunities">Earning Opportunities</TabsTrigger>
             <TabsTrigger value="challenges">Active Challenges</TabsTrigger>
             <TabsTrigger value="referrals">Referral System</TabsTrigger>
             <TabsTrigger value="achievements">Achievements</TabsTrigger>
-            <TabsTrigger value="levels">Reward Levels</TabsTrigger>
             <TabsTrigger value="dashboard">My Earnings</TabsTrigger>
           </TabsList>
+
+          {/* Tasks Tab */}
+          <TabsContent value="tasks">
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Complete Tasks & Earn Rewards
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Complete simple tasks to earn points and cash rewards instantly
+                </p>
+              </div>
+
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
+                  <span className="ml-2 text-gray-600">Loading tasks...</span>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {Object.entries(getTasksByCategory()).map(([category, categoryTasks]) => (
+                    <Card key={category} className="border-2">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-3">
+                          <Target className="h-5 w-5 text-blue-600" />
+                          {category}
+                        </CardTitle>
+                        <CardDescription>
+                          {categoryTasks.filter(t => t.status === 'completed').length} of {categoryTasks.length} completed
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          {categoryTasks.map((task) => (
+                            <div key={task.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-start gap-3 flex-1">
+                                  {getTaskIcon(task.status)}
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                                        {task.name}
+                                      </h3>
+                                      <Badge 
+                                        variant={
+                                          task.status === 'completed' ? 'default' :
+                                          task.status === 'in_progress' ? 'secondary' : 'outline'
+                                        }
+                                        className={
+                                          task.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200' :
+                                          task.status === 'in_progress' ? 'bg-blue-100 text-blue-800 border-blue-200' : ''
+                                        }
+                                      >
+                                        {task.status === 'completed' ? 'Completed' :
+                                         task.status === 'in_progress' ? 'In Progress' : 'Available'}
+                                      </Badge>
+                                    </div>
+                                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                                      {task.description}
+                                    </p>
+                                    {task.progress !== undefined && task.maxProgress && (
+                                      <div className="mb-2">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <span className="text-xs text-gray-500">Progress</span>
+                                          <span className="text-xs text-gray-500">{task.progress}/{task.maxProgress}</span>
+                                        </div>
+                                        <Progress 
+                                          value={task.maxProgress > 0 ? (task.progress / task.maxProgress) * 100 : 0} 
+                                          className="h-2" 
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="text-right space-y-2">
+                                  <div className="flex flex-col items-end gap-1">
+                                    <Badge variant="secondary" className="bg-green-100 text-green-800">
+                                      {task.reward}
+                                    </Badge>
+                                    <span className="text-xs text-gray-500">{task.pointsReward} points</span>
+                                  </div>
+                                  {task.status === 'available' && (
+                                    <Button 
+                                      size="sm" 
+                                      onClick={() => startTask(task.id)}
+                                      disabled={loading}
+                                    >
+                                      Start Task
+                                    </Button>
+                                  )}
+                                  {task.status === 'in_progress' && (
+                                    <Button 
+                                      size="sm" 
+                                      onClick={() => completeTask(task.id)}
+                                      disabled={loading}
+                                      className="bg-blue-600 hover:bg-blue-700"
+                                    >
+                                      Complete
+                                    </Button>
+                                  )}
+                                  {task.status === 'completed' && (
+                                    <div className="flex items-center gap-1 text-green-600">
+                                      <CheckCircle className="h-4 w-4" />
+                                      <span className="text-sm font-medium">Done!</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
 
           {/* Earning Opportunities Tab */}
           <TabsContent value="opportunities">
@@ -363,7 +778,7 @@ export default function CommunityRewards() {
           {/* My Earnings Dashboard Tab */}
           <TabsContent value="dashboard">
             <div className="space-y-6">
-              <div className="grid lg:grid-cols-3 gap-6">
+              <div className="grid lg:grid-cols-4 gap-6">
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
@@ -373,9 +788,9 @@ export default function CommunityRewards() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold text-green-600 mb-2">
-                      ${userStats.totalEarnings}
+                      ${userStats.totalEarnings.toFixed(2)}
                     </div>
-                    <p className="text-sm text-gray-600">This month: +$89.50</p>
+                    <p className="text-sm text-gray-600">Available: ${userStats.availableBalance.toFixed(2)}</p>
                   </CardContent>
                 </Card>
 
@@ -383,14 +798,29 @@ export default function CommunityRewards() {
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Coins className="h-5 w-5 text-blue-600" />
-                      Available Credits
+                      Credits & Points
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold text-blue-600 mb-2">
                       {userStats.availableCredits}
                     </div>
-                    <p className="text-sm text-gray-600">≈ ${(userStats.availableCredits * 0.5).toFixed(2)} value</p>
+                    <p className="text-sm text-gray-600">Total points earned</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Target className="h-5 w-5 text-orange-600" />
+                      Tasks Completed
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-orange-600 mb-2">
+                      {tasks.filter(t => t.status === 'completed').length}
+                    </div>
+                    <p className="text-sm text-gray-600">of {tasks.length} available tasks</p>
                   </CardContent>
                 </Card>
 
@@ -405,8 +835,8 @@ export default function CommunityRewards() {
                     <div className="text-2xl font-bold text-purple-600 mb-2 capitalize">
                       {userStats.currentLevel}
                     </div>
-                    <Progress value={65} className="h-2" />
-                    <p className="text-sm text-gray-600 mt-2">650/1000 to Expert</p>
+                    <Progress value={Math.min((userStats.availableCredits / 1000) * 100, 100)} className="h-2" />
+                    <p className="text-sm text-gray-600 mt-2">{userStats.availableCredits}/1000 to next level</p>
                   </CardContent>
                 </Card>
               </div>
@@ -414,33 +844,38 @@ export default function CommunityRewards() {
               <div className="grid md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Earning Breakdown</CardTitle>
+                    <CardTitle>Task Progress</CardTitle>
+                    <CardDescription>Your completed and ongoing tasks</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Question Rewards</span>
-                      <span className="font-semibold">$67.50</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Review Bonuses</span>
-                      <span className="font-semibold">$89.25</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Referral Commissions</span>
-                      <span className="font-semibold">$45.00</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Challenge Prizes</span>
-                      <span className="font-semibold">$45.75</span>
-                    </div>
+                    {Object.entries(getTasksByCategory()).map(([category, categoryTasks]) => {
+                      const completed = categoryTasks.filter(t => t.status === 'completed').length;
+                      const total = categoryTasks.length;
+                      const progress = total > 0 ? (completed / total) * 100 : 0;
+                      
+                      return (
+                        <div key={category} className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600 text-sm">{category}</span>
+                            <span className="font-semibold text-sm">{completed}/{total}</span>
+                          </div>
+                          <Progress value={progress} className="h-2" />
+                        </div>
+                      );
+                    })}
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader>
                     <CardTitle>Community Activity</CardTitle>
+                    <CardDescription>Your engagement statistics</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Tasks Completed</span>
+                      <Badge variant="secondary">{tasks.filter(t => t.status === 'completed').length}</Badge>
+                    </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Questions Asked</span>
                       <Badge variant="secondary">{userStats.questionsAsked}</Badge>
@@ -460,6 +895,44 @@ export default function CommunityRewards() {
                   </CardContent>
                 </Card>
               </div>
+
+              {/* Recent Task Completions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Task Completions</CardTitle>
+                  <CardDescription>Your latest completed tasks and rewards</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {tasks.filter(t => t.status === 'completed').length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No completed tasks yet</p>
+                      <p className="text-sm">Start completing tasks to see your progress here</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {tasks.filter(t => t.status === 'completed').map((task) => (
+                        <div
+                          key={task.id}
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            <div>
+                              <div className="font-medium">{task.name}</div>
+                              <div className="text-sm text-muted-foreground">{task.category}</div>
+                            </div>
+                          </div>
+                          <div className="text-right space-y-1">
+                            <div className="font-medium text-green-600">{task.reward}</div>
+                            <div className="text-sm text-muted-foreground">{task.pointsReward} points</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
